@@ -21,7 +21,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
-  final _compressorPlugin = Compressor();
 
   @override
   void initState() {
@@ -39,7 +38,7 @@ class _MyAppState extends State<MyApp> {
     // We also handle the message potentially returning null.
     try {
       platformVersion =
-          await _compressorPlugin.compressVideo(videoPath, compressedPath) ??
+          await Compressor.compressVideo(videoPath, compressedPath) ??
               'Unknown platform version';
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
