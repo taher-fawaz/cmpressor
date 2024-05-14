@@ -7,6 +7,7 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
+import java.io.File;
 
 import android.os.Environment;
 import com.arthenica.mobileffmpeg.Config;
@@ -48,6 +49,12 @@ class VideoCompressor {
   public static String compressVideo(String videoPath, String outputPath) {
       if (videoPath == null || videoPath.isEmpty()) {
           return null; // Handle null or empty video path
+      }
+
+      // Create the output directory if it doesn't exist
+      File outputDir = new File(outputPath).getParentFile();
+      if (!outputDir.exists()) {
+          outputDir.mkdirs();
       }
 
       // Construct the FFmpeg command to compress the video
