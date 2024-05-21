@@ -24,6 +24,11 @@ abstract class CompressorPlatform extends PlatformInterface {
   }
 
   Future<String?> compressVideo(String inputPath, String outputPath) {
-    throw UnimplementedError('platformVersion() has not been implemented.');
+    throw UnimplementedError('compressVideo() has not been implemented.');
+  }
+
+  Future<String?> trimVideo(
+      String inputPath, String outputPath, double startTime, double endTime) {
+    throw UnimplementedError('trimVideo() has not been implemented.');
   }
 }

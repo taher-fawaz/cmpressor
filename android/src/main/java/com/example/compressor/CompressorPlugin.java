@@ -28,16 +28,26 @@ public class CompressorPlugin implements FlutterPlugin, MethodCallHandler {
 
   @Override
   public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
-    if (call.method.equals("compressVideo")) {
-      String videoPath = call.argument("inputPath");
-      String outputPath = call.argument("outputPath");
-      String compressedFilePath = VideoCompressor.compressVideo(videoPath,outputPath);
-      result.success(compressedFilePath); // Return compressed video file path
-    } else {
-      result.notImplemented();
+    switch (call.method) {
+      case "compressVideo":
+        String videoPath = call.argument("inputPath");
+        String outputPath = call.argument("outputPath");
+        String compressedFilePath = VideoCompressor.compressVideo(videoPath, outputPath);
+        result.success(compressedFilePath); // Return compressed video file path
+        break;
+      case "trimVideo":
+        String inputPath = call.argument("inputPath");
+        String trimOutputPath = call.argument("outputPath");
+        double startTime = call.argument("startTime");
+        double endTime = call.argument("endTime");
+        String trimmedFilePath = VideoCompressor.trimVideo(inputPath, trimOutputPath, startTime, endTime);
+        result.success(trimmedFilePath); // Return trimmed video file path
+        break;
+      default:
+        result.notImplemented();
+        break;
     }
   }
-
   @Override
   public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
     channel.setMethodCallHandler(null);
@@ -71,5 +81,29 @@ class VideoCompressor {
        
           return null;
       }
+  }
+
+  public static String trimVideo(String videoPath, String outputPath, double startTime, double endTime) {
+    if (videoPath == null || videoPath.isEmpty()) {
+      return null; // Handle null or empty video path
+    }
+
+    // Create the output directory if it doesn't exist
+    File outputDir = new File(outputPath).getParentFile();
+    if (!outputDir.exists()) {
+      outputDir.mkdirs();
+    }
+
+    // Construct the FFmpeg command to trim the video
+    String[] cmd = new String[]{"-y", "-i", videoPath, "-ss", String.valueOf(startTime), "-to", String.valueOf(endTime), "-c", "copy", outputPath};
+
+    // Execute the FFmpeg command
+    int rc = FFmpeg.execute(cmd);
+
+    if (rc == Config.RETURN_CODE_SUCCESS) {
+      return outputPath;
+    } else {
+      return null; // Handle trimming failure
+    }
   }
 }
