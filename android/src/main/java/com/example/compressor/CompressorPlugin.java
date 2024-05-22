@@ -93,7 +93,16 @@ class VideoCompressor {
     if (!outputDir.exists()) {
       outputDir.mkdirs();
     }
-
+    // String[] cmd = {
+    //   "-y", 
+    //   "-i", videoPath, 
+    //   "-c:v", "libx264",  // Use libx264 for better compression
+    //   "-preset", "fast",  // Use a fast preset for reasonable balance between speed and compression
+    //   "-crf", "28",       // Adjust CRF (Constant Rate Factor) for compression quality
+    //   "-c:a", "aac", 
+    //   "-b:a", "128k",     // Set audio bitrate
+    //   outputPath
+    // };
     // Construct the FFmpeg command to trim the video
     String[] cmd = new String[]{"-y", "-i", videoPath, "-ss", String.valueOf(startTime), "-to", String.valueOf(endTime), "-c", "copy", outputPath};
 
